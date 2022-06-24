@@ -1,30 +1,82 @@
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import "./App.css";
+import Navbar from "./components/Navbar";
+import TextForm from "./components/TextForm";
+import About from "./components/About";
+import React, { useState } from "react";
+import Alert from "./components/Alert";
 function App() {
+  const [alert, setAlert] = useState("");
+  const [mode, setMode] = useState(`light`);
+
+  const showAlert = (message, type) => {
+    setAlert({
+      msg: message,
+      type: type,
+    });
+    setTimeout(() => {
+      setAlert(null);
+    }, 1500);
+  };
+
+  const toggleMode = (cls) => {
+    if (mode === "light" || mode === "green" || mode === "red") {
+      setMode(`dark`);
+      document.body.style.backgroundColor = "grey";
+      showAlert("Dark mode has enabled", "success");
+      document.title = "Textutils | Dark mode";
+    } else {
+      setMode(`light`);
+      document.body.style.backgroundColor = "white";
+      showAlert("light mode has enabled", "success");
+    }
+  };
+
+  const switchRedMode = () => {
+    if (mode === "light" || mode === "green" || mode === "dark") {
+      setMode(`red`);
+      document.body.style.backgroundColor = "red";
+      showAlert("red mode has enabled", "success");
+      document.title = "TextUtils | Red mode";
+    } else {
+      setMode(`light`);
+      document.body.style.backgroundColor = "white";
+      showAlert("light mode has enabled", "success");
+    }
+  };
+
+  const switchGreenMode = () => {
+    if (mode === "light" || mode === "red" || mode === "dark") {
+      setMode(`green`);
+      document.body.style.backgroundColor = "green";
+      showAlert("green mode has enabled", "success");
+      document.title = "TextUtils | green Mode";
+    } else {
+      setMode(`light`);
+      document.body.style.backgroundColor = "white";
+      showAlert("light mode has enabled", "success");
+    }
+  };
+
   return (
     <>
-    <nav className="navbar navbar-expand-lg bg-light">
-  <div className="container-fluid">
-    <a className="navbar-brand" href="/">TextUtils</a>
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="/">Home</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link active" href="/">About</a>
-        </li>
-      </ul>
-      <form className="d-flex" role="search">
-        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button className="btn btn-outline-success" type="submit">Search</button>
-      </form>
-    </div>
-  </div>
-</nav>
+      <Router>
+        <Navbar
+          title="TextUtils"
+          mode={mode}
+          toggleMode={toggleMode}
+          switchRedMode={switchRedMode}
+          switchGreenMode={switchGreenMode}
+        />
+        <Alert alert={alert} />
+        <div className="container my-3">
+          <Routes>
+            <Route exact path="/about" element={<About mode={mode} />}></Route>
+            <Route exact path="/" element={<TextForm />}></Route>
+          </Routes>
+        </div>
+      </Router>
     </>
   );
 }
